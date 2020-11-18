@@ -110,11 +110,12 @@ export default {
   grid-auto-rows: minmax(50px, auto);
   margin: 0 auto;
   font-size: 40px;
+  box-shadow: 0 0 10px #35495e;
 }
 
 .display {
   grid-column: 1/5;
-  background-color: #333;
+  background-color: #35495e;
   color: white;
 }
 
@@ -123,7 +124,7 @@ export default {
 }
 
 .btn {
-  background-color: #eee;
+  background-color: #41b883;
   border: 1px solid #333;
   border-collapse: collapse;
   cursor:pointer
