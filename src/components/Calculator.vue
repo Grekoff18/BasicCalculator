@@ -1,34 +1,25 @@
 <template>
     <div class="calc">
-        <div class="basic-calc">
-            <div class="display">Hello</div>
-            <div class="control-btn">
-                <div class="btn">C</div>
-                <div class="btn">Del</div> 
-            </div>
-            <div class="other-btns">
-                <div class="num-block">
-                    <div class="num">7</div>
-                    <div class="num">8</div>
-                    <div class="num">9</div>
-                    <div class="num">4</div>
-                    <div class="num">5</div>
-                    <div class="num">6</div>
-                    <div class="num">1</div>
-                    <div class="num">2</div>
-                    <div class="num">3</div>
-                    <div class="num">0</div>
-                    <div class="num">.</div>
-                    <div class="num operator">/</div>
-                </div>
-                <div class="operator-block">
-                    <div class="btn operator">x</div>
-                    <div class="btn operator">-</div>
-                    <div class="btn operator">+</div>
-                    <div class="btn operator">=</div>
-                </div>    
-            </div>
-        </div>
+      <div class="display">{{current || 0}}</div>
+      <div class="btn" @click="clear">C</div>
+      <div class="btn" @click="sign">+/-</div>
+      <div class="btn" @click="percent">%</div>
+      <div class="btn operator" @click="divide">÷</div>
+      <div class="btn" @click="append(7)">7</div>
+      <div class="btn" @click="append(8)">8</div>
+      <div class="btn" @click="append(9)">9</div>
+      <div class="btn operator" @click="times">x</div>
+      <div class="btn" @click="append(4)">4</div>
+      <div class="btn" @click="append(5)">5</div>
+      <div class="btn" @click="append(6)">6</div>
+      <div class="btn operator" @click="minus">-</div>
+      <div class="btn" @click="append(1)">1</div>
+      <div class="btn" @click="append(2)">2</div>
+      <div class="btn" @click="append(3)">3</div>
+      <div class="btn operator" @click="add">+</div>
+      <div class="btn zero" @click="append(0)">0</div>
+      <div class="btn" @click="dot">.</div>
+      <div class="btn operator" @click="equal">=</div>
     </div>
 </template>
 
@@ -36,73 +27,115 @@
 
 export default {
     name: "Calculator",
-    props: {
 
+    data() {
+      return {
+        previous: null,
+        current: "",
+        operator: null,
+        operatorClicked: false,
+      }
     },
+
+    methods: {
+      clear() {
+        this.current = "";
+      },
+
+      sign() {
+        this.current = this.current.charAt(0) === "-" ?
+            this.current.slice(1) : `-${this.current}`;
+      },
+
+      percent() {
+        this.current = `${parseFloat(this.current) / 100}`;
+      },
+
+      append(num) {
+        if (this.operatorClicked) {
+          this.current = "";
+          this.operatorClicked = false;
+        }
+        this.current += num;
+      },
+
+      dot() {
+        if (this.current.indexOf(".") === -1) {
+          this.append(".");
+        }
+      },
+
+      setPrevious() {
+        this.previous = this.current;
+        this.operatorClicked = true;
+      },
+
+      divide() {
+        this.operator = (a, b) => a / b;
+        this.setPrevious();
+      },
+
+      times() {
+        this.operator = (a, b) => a * b;
+        this.setPrevious();
+      },
+
+      minus() {
+        this.operator = (a, b) => a - b;
+        this.setPrevious();
+      },
+
+      add() {
+        this.operator = (a, b) => a + b;
+        this.setPrevious();
+      },
+
+      equal() {
+        this.current = `${this.operator(
+            parseFloat(this.previous),
+            parseFloat(this.current)
+        )}`;
+        this.previous = null;
+      }
+    }
 }
 
 </script>
 
-<style lang="sass" scoped>
+<style lang="scss" scoped>
+.calc {
+  width: 400px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(50px, auto);
+  margin: 0 auto;
+  font-size: 40px;
+}
 
-    .basic-calc
-        display: flex
-        flex-direction: column
-        margin: 0 auto
-        width: 400px
-        font-size: 40px 
-        box-shadow: 0 0 15px black
-    
-    .display 
-        width: 100%
-        background-color: #35495e
-        color: #fff
-        border-bottom: 1px solid white
+.display {
+  grid-column: 1/5;
+  background-color: #333;
+  color: white;
+}
 
-    .control-btn
-        width: 100%
-        display: flex
-        flex-direction: row
+.zero {
+  grid-column: 1/3;
+}
 
-        .btn 
-            width: 50%
-            background-color: #41b883
+.btn {
+  background-color: #eee;
+  border: 1px solid #333;
+  border-collapse: collapse;
+  cursor:pointer
+}
 
-    .other-btns 
-        width: 100%
-        display: flex
-        flex-direction: row
+.btn:active {
+  transform: scale(0.95);
+}
 
-        .num-block
-            width: 75%
-            display: flex
-            flex-direction: row
-            flex-wrap: wrap
-
-            .num
-                width: 32%
-                flex-grow: 1
-                background-color: #41b883
-                border-bottom: 1px solid white
-                cursor: pointer
-
-            :last-child 
-                background-color: #35495e
-
-
-        .operator-block 
-            width: 25%
-            display: column
-            flex-wrap: wrap
-
-
-    .btn     
-        background-color: #f2f2f2
-        border-bottom: 1px solid white
-        cursor: pointer
-
-    .operator 
-        background-color: #35495e
-        color: #fff 
+.operator {
+  background-color: orange;
+  color: white;
+}
         
 </style>
