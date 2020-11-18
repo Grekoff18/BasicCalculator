@@ -1,6 +1,6 @@
 <template>
     <div class="calc">
-      <div class="display">{{current || 0}}</div>
+      <div class="display">{{numericSpy || '0'}}</div>
       <div class="btn" @click="clear">C</div>
       <div class="btn" @click="sign">+/-</div>
       <div class="btn" @click="percent">%</div>
@@ -97,6 +97,16 @@ export default {
         )}`;
         this.previous = null;
       }
+    },
+
+    computed: {
+      numericSpy: function() {
+        if (this.current.length >= 17) {
+          alert("Вы превысили лимит на количество чисел, последующие числа не будут видны!");
+        }
+
+        return this.current;
+      }
     }
 }
 
@@ -117,6 +127,7 @@ export default {
   grid-column: 1/5;
   background-color: #35495e;
   color: white;
+  overflow: hidden;
 }
 
 .zero {
